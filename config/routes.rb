@@ -1,9 +1,7 @@
 Rails.application.routes.draw do
   scope '/api', :defaults => { :format => :json } do
     resources :users, only: [:show] do
-      resources :tweets do
-
-      end
+      resources :tweets, only: [:index]
     end
   end
 end

@@ -12,7 +12,13 @@ class TweetsController < ApplicationController
       query += " filter:images"
     end
     begin
-      @tweets = @client.search(query).map do |tweet|
+      @tweets = @client.search(query).find_all do |tweet|
+        selected = true
+        if params[:min_retweets]
+          selected = false if tweet.retweet_count < params[:min_retweets].to_i
+        end
+        selected
+      end.map do |tweet|
         {
             :retweet_count => tweet.retweet_count,
             :text => tweet.text,
@@ -22,7 +28,7 @@ class TweetsController < ApplicationController
       end
       render json: @tweets
     rescue Twitter::Error
-      render json: { message: 'User not found' }, status: :not_found
+      render json: { message: 'Something went wrong' }, status: :not_found
     end
   end
 end
