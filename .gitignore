@@ -15,4 +15,5 @@
 !/log/.keep
 /tmp
 .powrc
+.rvmrc
 .idea/*
