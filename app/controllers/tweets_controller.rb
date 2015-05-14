@@ -23,7 +23,7 @@ class TweetsController < ApplicationController
             :retweet_count => tweet.retweet_count,
             :text => tweet.text,
             :created_at => tweet.created_at,
-            :media => tweet.media? ? tweet.media.map{|m| m.uri.to_s} : nil
+            :media => tweet.media? ? tweet.media.map{|m| m.media_url.to_s} : nil
         }
       end
 
