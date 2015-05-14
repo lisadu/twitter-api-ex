@@ -2,11 +2,11 @@ class TweetsController < ApplicationController
   # Allow users to filter tweets by number of re-tweets, by dates, with or without picture.
   def index
     query = "from:#{params[:user_id]}"
-    if params[:since]
+    if params[:since].present?
       query += " since:#{params[:since]}"
     end
-    if params[:until]
-      query += " since:#{params[:until]}"
+    if params[:until].present?
+      query += " until:#{params[:until]}"
     end
     if params[:with_picture] == '1'
       query += " filter:images"
@@ -14,7 +14,7 @@ class TweetsController < ApplicationController
     begin
       @tweets = @client.search(query).find_all do |tweet|
         selected = true
-        if params[:min_retweets]
+        if params[:min_retweets].present?
           selected = false if tweet.retweet_count < params[:min_retweets].to_i
         end
         selected
@@ -26,6 +26,7 @@ class TweetsController < ApplicationController
             :media => tweet.media? ? tweet.media.map{|m| m.uri.to_s} : nil
         }
       end
+
       render json: @tweets
     rescue Twitter::Error
       render json: { message: 'Something went wrong' }, status: :not_found
