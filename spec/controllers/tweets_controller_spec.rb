@@ -4,7 +4,8 @@ RSpec.describe TweetsController, type: :controller do
   describe "GET #index" do
     let(:params) { { :user_id => 'test' } }
     let(:client) { instance_double(Twitter::REST::Client)}
-    let(:tweet)  { instance_double(Twitter::Tweet, :retweet_count => 5, :text => 'text', :created_at => DateTime.new, :media? => false) }
+    let(:tweet1) { instance_double(Twitter::Tweet, :retweet_count => 1, :text => 'tweet1', :created_at => DateTime.new, :media? => false) }
+    let(:tweet2) { instance_double(Twitter::Tweet, :retweet_count => 10, :text => 'tweet2', :created_at => DateTime.new, :media? => false) }
 
     before do
       controller.instance_variable_set(:@client, client)
@@ -12,10 +13,10 @@ RSpec.describe TweetsController, type: :controller do
     end
 
     it "responds successfully with tweet" do
-      allow(client).to receive(:search).and_return([tweet])
+      allow(client).to receive(:search).and_return([tweet1])
       get :index, params
       expect(response).to have_http_status(200)
-      expect(response.body).to include(tweet.text)
+      expect(response.body).to include(tweet1.text)
     end
 
     it "can search by since date" do
@@ -43,10 +44,11 @@ RSpec.describe TweetsController, type: :controller do
     end
 
     it "can search by min_retweets" do
-      allow(client).to receive(:search).with('from:test').and_return([tweet])
+      allow(client).to receive(:search).with('from:test').and_return([tweet1, tweet2])
       get :index, params.merge(:min_retweets => 10)
       expect(response).to have_http_status(200)
-      expect(response.body).to eq "[]"
+      expect(response.body).not_to include(tweet1.text)
+      expect(response.body).to include(tweet2.text)
     end
 
     it "responds with 404 when not found" do
