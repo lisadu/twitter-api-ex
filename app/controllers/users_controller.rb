@@ -6,7 +6,7 @@ class UsersController < ApplicationController
       @user = @client.user(params[:id])
       response = Hash[USER_ATTRIBUTES.map { |key| [key, @user.send(key)]}]
       if params[:include_rep_score]
-        response[:rep_score] = calculate_rep_score(@user, @client.user_timeline(params[:id]))
+        response[:rep_score] = RepScore.calculate(@user, @client.user_timeline(params[:id]))
       end
       render json: response
     rescue Twitter::Error
@@ -14,8 +14,4 @@ class UsersController < ApplicationController
     end
   end
 
-  private
-  def calculate_rep_score(user, tweets)
-
-  end
 end
