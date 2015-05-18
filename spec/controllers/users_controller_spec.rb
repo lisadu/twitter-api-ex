@@ -11,7 +11,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     it "responds successfully with tweet" do
-      allow(client).to receive(:user).and_return(instance_double(Twitter::User))
+      allow(client).to receive(:user).and_return(instance_double(Twitter::User, :followers_count => 1, :friends_count => 1, :name => 'test', :screen_name => 'test', :profile_image_url => ''))
       get :show, params
       expect(response).to have_http_status(200)
     end
