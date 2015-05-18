@@ -8,7 +8,7 @@ class TweetsController < ApplicationController
     if params[:until].present?
       query += " until:#{params[:until]}"
     end
-    if params[:with_picture] == '1'
+    if params[:with_picture] == 'on'
       query += " filter:images"
     end
     begin
