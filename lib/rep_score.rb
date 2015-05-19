@@ -8,8 +8,13 @@ class RepScore
     (calculate_followers_count_score(user.followers_count) + calculate_tweets_sentiment(tweets)).round
   end
 
+  # Unfortunately this will exceed Twitter rate limit
+  # def self.calculate_followers_score(followers)
+  #   followers.sum(&:followers_count)
+  # end
+
   def self.calculate_followers_count_score(followers_count)
-    Math.log2(followers_count)
+    10 * Math.log2(followers_count)
   end
 
   def self.calculate_tweets_sentiment(tweets)
