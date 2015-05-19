@@ -5,7 +5,11 @@ class RepScore
   NEGATIVE_WORDS = File.readlines(CONFIG_PATH.join('negative-words.txt')).each { |l| l.chomp! }
 
   def self.calculate(user, tweets)
+    (calculate_followers_count_score(user.followers_count) + calculate_tweets_sentiment(tweets)).round
+  end
 
+  def self.calculate_followers_count_score(followers_count)
+    Math.log2(followers_count)
   end
 
   def self.calculate_tweets_sentiment(tweets)
@@ -23,6 +27,6 @@ class RepScore
       end
     end
 
-    return (positive_words_count - negative_words_count).to_f / (tweets.count + 5)
+    return 10 * (positive_words_count - negative_words_count).to_f / (tweets.count + 5)
   end
 end
